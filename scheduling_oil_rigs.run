@@ -1,0 +1,31 @@
+reset;
+
+model scheduling_oil_rigs.mod;
+
+data SOR-10-5.dat;
+ 
+option solver cplex;                    #especifica o solver a ser chamado
+
+option solver_msg 0;                    #configura  para desligar mensagens iniciais do solver
+
+option cplex_options 'lpdisplay = 1 mipdisplay = 2 mipgap = 0.000001 threads = 1';      #   
+
+option gutter_width 1;                  #configura para o espaço entr caracteres
+
+option display_eps 1e-5;                #configura valores menores do que eps
+
+option omit_zero_rows 1;
+
+option omit_zero_cols 1;
+
+#problem scheduling_oil_rigs: cost, x, y;
+
+solve;
+
+
+printf "cost: %.2f\n", cost;
+display x;
+display y;
+display cost;
+#display scheduling_oil_rigs.result;
+

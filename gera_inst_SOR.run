@@ -1,0 +1,70 @@
+param wells;
+param rigs;
+
+#Numbers of wells and rigs
+printf "How many wells:";
+read wells <-;
+printf "How many rigs:";
+read rigs <-;
+
+set M := {1..wells};
+set N := {1..rigs};
+set K := {1..wells};
+
+param q{N} := round(Uniform(1,3));
+param l{M} := round(Uniform(1,3));
+param d{M} := Uniform(1,30);		#Duration of the maintenance required by well j
+param p{M} := Uniform(1,100);		#Oil production on well j
+param t{M,M} := Uniform(1,50);		#Time between well j and v
+param e{N,M} := Uniform(1,30);		#Time between initial point of the rig i and well j
+
+param BM := wells*30*50;
+
+param arquivo symbolic := ("SOR-" & wells & "-" & rigs & ".dat");
+
+#escrita do arqivo-------------------------------------------------------------
+
+printf "param wells := %d;\n", wells > (arquivo);	#Number of wells
+printf "param rigs := %d;\n", rigs >> (arquivo);	#Number of rigs
+printf "param BM := %d;\n", BM >> (arquivo);		#Big M
+
+#-------------------------------------------------------
+printf "param q := \n" >> (arquivo);
+for{i in N}{
+	printf "%2d %2d\n", i, q[i] >> (arquivo);
+}
+printf ";\n" >> (arquivo);
+
+#-------------------------------------------------------
+printf "param: l d p := \n" >> (arquivo);
+for{j in M}{
+	printf "%2d %4d %8.2f %8.2f\n", j, l[j], d[j], p[j] >> (arquivo);
+}
+printf ";\n" >> (arquivo);
+
+#-------------------------------------------------------
+printf "param t:" >> (arquivo);
+for{j in M}{printf " %d", j >> (arquivo)}
+printf " :=\n" >> (arquivo);
+for{v in M}{
+	printf "%2d ", v >> (arquivo);
+	for{j in M}{
+		printf "%8.2f ", t[v,j] >> (arquivo);
+		}
+	printf "\n" >> (arquivo);
+	}
+printf ";\n" >> (arquivo);
+
+#-------------------------------------------------------
+printf "param e:" >> (arquivo);
+for{j in M}{printf " %d", j >> (arquivo)}
+printf " :=\n" >> (arquivo);
+for{i in N}{
+	printf "%2d ", i >> (arquivo);
+	for{j in M}{
+		printf "%8.2f ", e[i,j] >> (arquivo);
+		}
+	printf "\n" >> (arquivo);
+	}
+printf ";\n" >> (arquivo);
+
